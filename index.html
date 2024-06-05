@@ -1,51 +1,135 @@
-<!DOCTYPE html>
-<html>
-
+<html lang="id" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <title>JW Player HLS</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="format-detection" content="email=no">
-    <script src="https://content.jwplatform.com/libraries/SAHhwvZq.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="same-origin">
     
+    <style>    
+    #dplayer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1000;
+    }
+
+    .video-container {
+        position: relative;
+        margin-top: 0;
+    }
+
+    .video-container:before {
+        display: block;
+        content: "";
+        width: 100%;
+        padding-bottom: 56.25%;
+    }
+
+    .video-container > div {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .video-container video {
+        width: 100%;
+        height: 100%;
+    }
+
+    .embed-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+    }
+
+    .embed-container iframe,
+    .embed-container object,
+    .embed-container embed {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100% !important;
+        height: 100%;
+    }
     
-</head>
+    .dplayer-menu {
+        display: none !important;
+    }
+    
+    .dplayer-full-in-icon {
+        display: none !important;
+    }
+    </style> 
 
-<body>
-    <div id="player"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habotv/cdn@master/migistelins.css">  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habotv/cdn@master/tiny-sliders.css">            
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habotv/cdn@master/jaraks.css">
 
+    <script src="https://cdn.jsdelivr.net/gh/habotv/player@master/playplus.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/habotv/player@master/hlsplus.min.js"></script>     
+    <script src="https://cdn.jsdelivr.net/gh/habotv/player@master/playflv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/habotv/player@master/haboplayerjs.js"></script> 
+      
     <script>
-        function getParameterByName(name, url) {
-            if (!url) url = window.location.href;
-            name = name.replace(/[\[\]]/g, "\\$&");
-            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, " "));
-        }
+    function J_get(name, url) {
+        url = url || window.location.href;
+        var start = url.indexOf(name + '=');
+        if (start == -1) return '';
+        var len = start + name.length + 1;
+        var end = url.indexOf('&', len);
+        if (end == -1) end = url.length;
+        return decodeURIComponent(url.substring(len, end));
+    }
 
-        var videoUrl = getParameterByName('video_url');
-        var posterUrl = getParameterByName('poster_url');
-
-        var playerInstance = jwplayer("player");
-
-        playerInstance.setup({
-            playlist: [{
-                file: videoUrl,
-                image: posterUrl,
-                //title: "Judul Video Anda"
-            }],
-            width: "100%",
-            aspectratio: "16:9",
-            autostart: true,
-            primary: "html5",
-            hlshtml: true
-        });
+    var id = J_get('id');
+    var gid = encodeURIComponent(id);
     </script>
-</body>
+</head>
+<body>  
 
+<div id="playerku" style="width:100%;height:100%;overflow:hidden;" class="dplayer dplayer-no-danmaku dplayer-playing">
+    <div class="dplayer-mask dplayer-mask-show" style="display: none;"></div>
+    <video class="dplayer-video dplayer-video-current" webkit-playsinline="" x-webkit-airplay="allow" playsinline="" poster="" preload="metadata"></video>
+</div>
+  
+<script>
+var dp = new DPlayer({
+    container: document.getElementById('playerku'),
+    theme: "#ffffff",
+    loop: false,
+    autoplay: true,
+    hotkey: true,
+    preload: "metadata",
+    mutex: true,
+    video: {
+        quality: [{
+            url: id,
+            name: "PECINTA MINTON",
+            type: 'auto',
+        }],
+        defaultQuality: 0,
+        pic: '',
+        referrerPolicy: "no-referrer"
+    },
+});
+
+document.getElementById('playerku').oncontextmenu = function() {
+    document.querySelector('.dplayer-menu').style.display = "none";
+    document.querySelector('.dplayer-mask').style.display = "none";
+    return false;
+};
+
+setTimeout(function() {
+    dp.play();
+}, 1000);
+</script>    
+
+</body>
 </html>
